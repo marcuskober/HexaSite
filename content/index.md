@@ -4,6 +4,9 @@ title: Marcus Kober
 date: 2024-09-17
 slug: index
 lang: de
+navigation: true
+navigation_title: Home
+content_id: home
 ---
 # Hallo, ich bin Marcus! 👋
 

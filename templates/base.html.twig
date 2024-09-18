@@ -6,6 +6,16 @@
     </head>
     <body>
         <header>
+            <div>Marcus Kober</div>
+            <div>
+                <navigation>
+                    <ul>
+                        {% for element in navigation %}
+                            <li><a href="{{ base_path }}{{ element.slug }}">{{ element.navigationTitle }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </navigation>
+            </div>
         </header>
         <nav>
         </nav>

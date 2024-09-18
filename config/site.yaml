@@ -1,0 +1,5 @@
+use_navigation: true
+
+navigation:
+  - home
+  - impressum

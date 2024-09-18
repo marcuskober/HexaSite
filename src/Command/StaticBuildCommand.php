@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Config\SiteConfig;
 use App\Content\ContentInterface;
 use App\Repository\ContentRepository;
 use App\Service\ItemWriter;
@@ -23,6 +24,7 @@ class StaticBuildCommand extends Command
         private ContentRepository $contentRepository,
         private Environment $twig,
         private ItemWriter $itemWriter,
+        private SiteConfig $siteConfig,
     )
     {
         parent::__construct();
@@ -60,6 +62,7 @@ class StaticBuildCommand extends Command
             $renderedItem = $this->twig->render($template, [
                 'base_path' => $basePath,
                 'item' => $item,
+                'navigation' => $this->contentRepository->getNavigation(),
             ]);
 
             $progressBar->setMessage('Converting <fg=green>' . $item->getMetaData()->getMarkdownPath() . '</> to <fg=green>' . $item->getMetaData()->getSlug() . '</>');

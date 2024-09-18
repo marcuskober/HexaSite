@@ -11,6 +11,33 @@ final class MetaData
     private string $layout;
     private string $description;
     private string $markdownPath;
+    private string $contentId;
+    private bool $navigation;
+    private string $navigationTitle;
+
+    public function __construct(array $data)
+    {
+        $this->title = $data['title'] ?? 'Untitled';
+        $this->slug = $data['slug'];
+        $this->lang = $data['lang'] ?? 'en';
+        $this->layout  = $data['layout'] ?? 'article';
+        $this->description  = $data['description'] ?? '';
+        $this->contentId = $data['content_id'] ?? $this->slug;
+        $this->navigation = $data['navigation'] ?? false;
+        $this->navigationTitle = $data['navigation_title'] ?? $this->title;
+
+        $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
+    }
+
+    public function isNavigation(): bool
+    {
+        return $this->navigation;
+    }
+
+    public function getNavigationTitle(): string
+    {
+        return $this->navigationTitle;
+    }
 
     public function getMarkdownPath(): string
     {
@@ -22,15 +49,9 @@ final class MetaData
         $this->markdownPath = $markdownPath;
     }
 
-    public function __construct(array $data)
+    public function getContentId(): string
     {
-        $this->title = $data['title'] ?? 'Untitled';
-        $this->slug = $data['slug'];
-        $this->lang = $data['lang'] ?? 'en';
-        $this->layout  = $data['layout'] ?? 'article';
-        $this->description  = $data['description'] ?? '';
-
-        $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
+        return $this->contentId;
     }
 
     public function getDescription(): string

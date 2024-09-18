@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Config\SiteConfig;
 use App\Content\ContentInterface;
 use App\Factory\ContentFactory;
 use App\Factory\MetaDataFactory;
@@ -19,11 +20,14 @@ final class ContentRepository
     private MarkdownConverter $converter;
     private string $currentUrl;
     private array $metaData = [];
+    private array $items = [];
+    private array $navigation = [];
 
     public function __construct(
         private readonly string $contentPath,
         private readonly MetaDataFactory $metaDataFactory,
         private readonly ContentFactory $contentFactory,
+        private readonly SiteConfig $siteConfig,
     )
     {
         $environment = new Environment();
@@ -37,7 +41,7 @@ final class ContentRepository
         $finder = new Finder();
         $finder->files()->in($this->contentPath)->name('*.md');
 
-        $items = [];
+        $this->items = [];
 
         foreach ($finder as $file) {
             $this->currentUrl = $file->getPath();
@@ -49,15 +53,25 @@ final class ContentRepository
 
             $metaData = $this->metaDataFactory->create($document->matter(), $relativePath);
             $metaData->setMarkdownPath($file->getRelativePathname());
-            $items[] = $this->contentFactory->create($metaData, $mdContent);
+            $item = $this->contentFactory->create($metaData, $mdContent);
+            $this->items[] = $item;
+
+            if ($this->siteConfig->use_navigation) {
+                $navgationOrder = array_search($item->getMetaData()->getContentId(), $this->siteConfig->navigation);
+                if ($navgationOrder !== false) {
+                    $this->navigation[$navgationOrder] = $metaData;
+                }
+            }
         }
 
-        return $items;
+        ksort($this->navigation);
+
+        return $this->items;
     }
 
     public function findByLayout(string $layout): array
     {
-        return array_filter($this->findAll(), function (ContentInterface $content) use ($layout) {
+        return array_filter($this->items, function (ContentInterface $content) use ($layout) {
             return $content->getMetaData()->getLayout() === $layout;
         });
     }
@@ -91,5 +105,10 @@ final class ContentRepository
             $realPath,
             $relativePath,
         ];
+    }
+
+    public function getNavigation(): array
+    {
+        return $this->navigation;
     }
 }

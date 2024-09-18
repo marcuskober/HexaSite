@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    config_path: '%kernel.project_dir%/config'
     content_path: '%kernel.project_dir%/content'
     output_path: '%kernel.project_dir%/build'
 
@@ -29,7 +30,10 @@ services:
         arguments:
             $contentPath: '%content_path%'
 
-
     App\Service\ItemWriter:
         arguments:
             $outputPath: '%output_path%'
+
+    App\Config\SiteConfig:
+        arguments:
+            $configPath: '%config_path%'
