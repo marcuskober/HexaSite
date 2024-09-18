@@ -3,7 +3,6 @@
 namespace App\Factory;
 
 use App\ValueObject\MetaData;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 final readonly class MetaDataFactory
 {
