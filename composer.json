@@ -7,14 +7,20 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "erusev/parsedown": "^1.7",
+        "league/commonmark": "^2.5",
+        "spatie/yaml-front-matter": "^2.0",
         "symfony/console": "7.1.*",
         "symfony/dotenv": "7.1.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.1.*",
         "symfony/runtime": "7.1.*",
+        "symfony/translation": "7.1.*",
+        "symfony/twig-bundle": "7.1.*",
         "symfony/yaml": "7.1.*"
     },
     "require-dev": {
+        "symfony/maker-bundle": "^1.61"
     },
     "config": {
         "allow-plugins": {

@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+    <title>{{ item.metadata.title }}</title>
+    <meta name="description" content="{{ item.metadata.description }}">
+{% endblock %}
+
+{% block body %}
+    {{ item.content|raw }}
+{% endblock %}
