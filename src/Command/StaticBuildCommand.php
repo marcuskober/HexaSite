@@ -2,10 +2,12 @@
 
 namespace App\Command;
 
+use App\Content\ContentInterface;
 use App\Repository\ContentRepository;
 use App\Service\ItemWriter;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -38,17 +40,35 @@ class StaticBuildCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
+        /** @var ContentInterface[] $items */
         $items = $this->contentRepository->findAll();
+
+        ProgressBar::setFormatDefinition('custom', "\n%message%\n\n%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n");
+
+        $progressBar = new ProgressBar($output, count($items));
+        $progressBar->setFormat('custom');
+        $progressBar->setMessage('Start building...');
+        $progressBar->start();
 
         foreach ($items as $item) {
             $template = $this->getTemplate($item->getMetaData()->getLayout());
 
+            $slug = $item->getMetaData()->getSlug();
+            $depth = substr_count($slug, '/');
+            $basePath = str_repeat('../', $depth);
+
             $renderedItem = $this->twig->render($template, [
+                'base_path' => $basePath,
                 'item' => $item,
             ]);
 
+            $progressBar->setMessage('Converting <fg=green>' . $item->getMetaData()->getMarkdownPath() . '</> to <fg=green>' . $item->getMetaData()->getSlug() . '</>');
+            $progressBar->advance();
+
             $this->itemWriter->writeItem($item->getMetaData()->getSlug(), $renderedItem);
         }
+
+        $progressBar->finish();
 
         $this->itemWriter->cleanUp();
 

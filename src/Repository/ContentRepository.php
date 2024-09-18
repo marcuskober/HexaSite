@@ -48,6 +48,7 @@ final class ContentRepository
             $relativePath = $file->getRelativePath();
 
             $metaData = $this->metaDataFactory->create($document->matter(), $relativePath);
+            $metaData->setMarkdownPath($file->getRelativePathname());
             $items[] = $this->contentFactory->create($metaData, $mdContent);
         }
 

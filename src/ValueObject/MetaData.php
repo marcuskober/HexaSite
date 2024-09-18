@@ -10,6 +10,17 @@ final class MetaData
     private \DateTimeInterface $date;
     private string $layout;
     private string $description;
+    private string $markdownPath;
+
+    public function getMarkdownPath(): string
+    {
+        return $this->markdownPath;
+    }
+
+    public function setMarkdownPath(string $markdownPath): void
+    {
+        $this->markdownPath = $markdownPath;
+    }
 
     public function __construct(array $data)
     {
