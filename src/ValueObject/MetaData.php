@@ -19,7 +19,7 @@ final class MetaData
         $this->layout  = $data['layout'] ?? 'article';
         $this->description  = $data['description'] ?? '';
 
-        $this->date = isset($data['date']) ? new \DateTime($data['date']) : new \DateTime();
+        $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
     }
 
     public function getDescription(): string
