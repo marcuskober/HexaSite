@@ -1,24 +1,12 @@
 ---
-layout: article
-title: Das ist der Titel
+layout: page
+title: Marcus Kober
 date: 2024-09-17
-slug: das-ist-ein-test
+slug: index
+lang: de
 ---
+# Hallo, ich bin Marcus! 👋
 
-# Das ist ein erster Test.
+Vielleicht bist du jetzt ein wenig erstaunt, aber ja: das ist (momentan) wirklich meine Webseite!
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
-[Über mich](ueber.md)
-
-- Aufzählungspunkt 1
-- Aufzählungspunkt 2
-
-```php
-// Code
-echo 'Test';
-```
-
-## Unterüberschrift
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Gerade arbeite ich - aus Spaß - an einem eigenen **Static Site Generator** namens [HexaSite](https://github.com/marcuskober/HexaSite) und diese Webseite spiegelt sozusagen den Entwicklungsstand des Tools wider. Darüber hinaus schreibe ich gerade eine Artikelserie, die sich mit der Erstellung eines Static Site Generators in Symfony beschäftigt. [Zum ersten Artikel](blog/ssg-01.md)
