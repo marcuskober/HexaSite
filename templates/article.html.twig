@@ -7,6 +7,9 @@
 
 {% block body %}
     <article>
+        <h1>{{ item.metadata.title }}</h1>
+        <p><em>{{ item.metadata.date.format('d.m.Y') }}</em></p>
+
         {{ item.content|raw }}
     </article>
 {% endblock %}
