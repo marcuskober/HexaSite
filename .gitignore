@@ -10,3 +10,5 @@
 ###< symfony/framework-bundle ###
 
 /.idea
+/internal.*
+/config/secrets/dev

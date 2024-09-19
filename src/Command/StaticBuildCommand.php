@@ -29,9 +29,11 @@ class StaticBuildCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $items = $this->contentProcessor->getAllItems();
-
         ProgressBar::setFormatDefinition('custom', "\n%message%\n\n%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n");
+
+        $progressBarItems = new ProgressBar($output, 100);
+        $items = $this->contentProcessor->getAllItems($progressBarItems);
+
         $progressBar = new ProgressBar($output, count($items));
         $progressBar->setFormat('custom');
         $progressBar->setMessage('Start building...');

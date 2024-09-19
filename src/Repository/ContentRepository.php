@@ -7,12 +7,16 @@ use App\Content\ContentInterface;
 use App\Factory\ContentFactory;
 use App\Factory\MetaDataFactory;
 use App\Service\CustomLinkRenderer;
+use App\Torchlight\TorchlightCodeRenderer;
 use App\ValueObject\MetaData;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
+use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\MarkdownConverter;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Finder\Finder;
 
 final class ContentRepository
@@ -24,24 +28,31 @@ final class ContentRepository
     private array $navigation = [];
 
     public function __construct(
-        private readonly string $contentPath,
-        private readonly MetaDataFactory $metaDataFactory,
-        private readonly ContentFactory $contentFactory,
-        private readonly SiteConfig $siteConfig,
+        private readonly string                 $contentPath,
+        private readonly MetaDataFactory        $metaDataFactory,
+        private readonly ContentFactory         $contentFactory,
+        private readonly SiteConfig             $siteConfig,
+        private readonly TorchlightCodeRenderer $torchlightCodeRenderer,
     )
     {
         $environment = new Environment();
         $environment->addExtension(new CommonMarkCoreExtension());
         $environment->addRenderer(Link::class, new CustomLinkRenderer($this));
+        $environment->addRenderer(FencedCode::class, $this->torchlightCodeRenderer);
+        $environment->addRenderer(IndentedCode::class, $this->torchlightCodeRenderer);
         $this->converter = new MarkdownConverter($environment);
     }
 
-    public function findAll(): array
+    public function findAll(ProgressBar $progressBar): array
     {
         $finder = new Finder();
         $finder->files()->in($this->contentPath)->name('*.md');
 
         $this->items = [];
+
+        $progressBar->setFormat('custom');
+        $progressBar->setMessage('Parsing files');
+        $progressBar->start($finder->count());
 
         foreach ($finder as $file) {
             $this->currentUrl = $file->getPath();
@@ -65,7 +76,12 @@ final class ContentRepository
                     $this->navigation[$navgationOrder] = $metaData;
                 }
             }
+
+            $progressBar->advance();
         }
+
+        $progressBar->setMessage('Ready.');
+        $progressBar->finish();
 
         ksort($this->navigation);
 

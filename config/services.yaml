@@ -37,3 +37,7 @@ services:
     App\Config\SiteConfig:
         arguments:
             $configPath: '%config_path%'
+
+    App\Torchlight\TorchlightApi:
+        arguments:
+            $apiKey: '%env(resolve:TORCHLIGHT_API_KEY)%'

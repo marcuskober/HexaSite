@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Content\ContentInterface;
 use App\Repository\ContentRepository;
 use App\ValueObject\MetaData;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Twig\Environment;
 
 final readonly class ContentProcessor
@@ -19,9 +20,9 @@ final readonly class ContentProcessor
     /**
      * @return ContentInterface[]
      */
-    public function getAllItems(): array
+    public function getAllItems(ProgressBar $progressBar): array
     {
-        return $this->contentRepository->findAll();
+        return $this->contentRepository->findAll($progressBar);
     }
 
     public function processItem(ContentInterface $item): string
