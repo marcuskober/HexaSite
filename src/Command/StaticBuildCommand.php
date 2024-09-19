@@ -68,7 +68,7 @@ class StaticBuildCommand extends Command
                     'archive' => $archive,
                 ]);
 
-                $itemContent = str_replace('<p>{{ archive|raw }}</p>', '{{ archive|raw }}', $item->getContent());
+                $itemContent = str_replace('<!--: archive :-->', '{{ archive|raw }}', $item->getContent());
                 $itemContent = $this->twig->createTemplate($itemContent)->render(['archive' => $archiveContent]);
                 $item->setContent($itemContent);
             }
