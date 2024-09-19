@@ -27,6 +27,11 @@ class CustomLinkRenderer implements NodeRendererInterface
 
         if (str_ends_with($url, '.md')) {
             $metaData = $this->contentRepository->getMetaDataByPath($url);
+            if (!$metaData) {
+                $attrs = $node->data->get('attributes');
+                $attrs['href'] = $url;
+                return new HtmlElement('a', $attrs, $childRenderer->renderNodes($node->children()));
+            }
             $url = $metaData->getSlug();
         }
 
