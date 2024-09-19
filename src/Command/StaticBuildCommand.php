@@ -59,6 +59,20 @@ class StaticBuildCommand extends Command
             $depth = substr_count($slug, '/');
             $basePath = str_repeat('../', $depth);
 
+            if ($item->getMetaData()->getArchive()) {
+                $archiveConfig = $item->getMetaData()->getArchive();
+                $archive = $this->contentRepository->findByLayoutWithParameters($archiveConfig['layout']);
+
+                $archiveContent = $this->twig->render('_archive.html.twig', [
+                    'base_path' => $basePath,
+                    'archive' => $archive,
+                ]);
+
+                $itemContent = str_replace('<p>{{ archive|raw }}</p>', '{{ archive|raw }}', $item->getContent());
+                $itemContent = $this->twig->createTemplate($itemContent)->render(['archive' => $archiveContent]);
+                $item->setContent($itemContent);
+            }
+
             $renderedItem = $this->twig->render($template, [
                 'base_path' => $basePath,
                 'item' => $item,

@@ -14,6 +14,7 @@ final class MetaData
     private string $contentId;
     private bool $navigation;
     private string $navigationTitle;
+    private false|array $archive;
 
     public function __construct(array $data)
     {
@@ -25,6 +26,7 @@ final class MetaData
         $this->contentId = $data['content_id'] ?? $this->slug;
         $this->navigation = $data['navigation'] ?? false;
         $this->navigationTitle = $data['navigation_title'] ?? $this->title;
+        $this->archive = $data['archive'] ?? false;
 
         $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
     }
@@ -82,5 +84,10 @@ final class MetaData
     public function getLayout(): string
     {
         return $this->layout;
+    }
+
+    public function getArchive(): bool|array
+    {
+        return $this->archive;
     }
 }

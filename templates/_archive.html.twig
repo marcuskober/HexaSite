@@ -1,0 +1,5 @@
+<ul>
+    {% for element in archive %}
+            <li><a href="{{ base_path }}{{ element.metaData.slug }}">{{ element.metaData.title }}</a></li>
+    {% endfor %}
+</ul>

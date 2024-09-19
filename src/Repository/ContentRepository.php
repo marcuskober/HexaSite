@@ -47,12 +47,15 @@ final class ContentRepository
             $this->currentUrl = $file->getPath();
 
             $document = YamlFrontMatter::parseFile($file->getRealPath());
-            $mdContent = $this->converter->convert($document->body());
+            $mdContent = $document->body();
 
             $relativePath = $file->getRelativePath();
-
             $metaData = $this->metaDataFactory->create($document->matter(), $relativePath);
             $metaData->setMarkdownPath($file->getRelativePathname());
+
+
+            $mdContent = $this->converter->convert($mdContent);
+
             $item = $this->contentFactory->create($metaData, $mdContent);
             $this->items[] = $item;
 
@@ -74,6 +77,22 @@ final class ContentRepository
         return array_filter($this->items, function (ContentInterface $content) use ($layout) {
             return $content->getMetaData()->getLayout() === $layout;
         });
+    }
+
+    public function findByLayoutWithParameters(string $layout, array $sort = ['date' => 'DESC'], int $limit = -1): array
+    {
+        $items = $this->findByLayout($layout);
+
+        $sortBy = 'get' . ucfirst(array_key_first($sort));
+        $sortDir = $sort[array_key_first($sort)];
+        usort($items, function (ContentInterface $itemA, ContentInterface $itemB) use ($sortBy, $sortDir) {
+            if ($sortDir === 'DESC') {
+                return $itemA->getMetaData()->$sortBy() < $itemB->getMetaData()->$sortBy();
+            }
+            return $itemA->getMetaData()->$sortBy() > $itemB->getMetaData()->$sortBy();
+        });
+
+        return $items;
     }
 
     public function getMetaDataByPath(string $path): ?MetaData

@@ -8,4 +8,5 @@ interface ContentInterface
 {
     public function getMetaData(): MetaData;
     public function getContent(): string;
+    public function setContent(string $content);
 }
