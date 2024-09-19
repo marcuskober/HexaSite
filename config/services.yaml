@@ -41,3 +41,7 @@ services:
     App\Torchlight\TorchlightApi:
         arguments:
             $apiKey: '%env(resolve:TORCHLIGHT_API_KEY)%'
+
+    App\Command\StaticBuildCommand:
+        arguments:
+            $contentPath: '%content_path%'

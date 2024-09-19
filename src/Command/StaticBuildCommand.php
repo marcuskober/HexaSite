@@ -10,6 +10,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(
     name: 'static:build',
@@ -20,6 +21,8 @@ class StaticBuildCommand extends Command
     public function __construct(
         private readonly ContentProcessor $contentProcessor,
         private readonly ItemWriter       $itemWriter,
+        private readonly Filesystem $fileSystem,
+        private string $contentPath,
     )
     {
         parent::__construct();
@@ -28,6 +31,13 @@ class StaticBuildCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
+        $this->fileSystem->remove('build/assets');
+        $this->fileSystem->mirror('assets', 'build/assets');
+        $contentAssetPath = $this->contentPath . DIRECTORY_SEPARATOR . 'assets';
+        if (is_dir($contentAssetPath)) {
+            $this->fileSystem->mirror($contentAssetPath, 'build/assets');
+        }
 
         ProgressBar::setFormatDefinition('custom', "\n%message%\n\n%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n");
 
