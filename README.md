@@ -58,10 +58,15 @@ The generated HTML files will be placed in the `build` directory.
 ## Roadmap
 
 - [x] First prototype for generating html files from markdown files
-- [ ] Internal linking
+- [x] Internal linking
 - [ ] Asset management
-- [ ] Menus
+- [ ] Navigation
+  - [x] Top level
+  - [ ] Sub menus
 - [ ] Article list (for blog pages)
+  - [x] Render article list
+  - [ ] List parameters like sorting
+  - [ ] Pagination
 - [ ] Multi language support
 
 ## Contributing
