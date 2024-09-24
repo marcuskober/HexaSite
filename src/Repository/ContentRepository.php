@@ -70,7 +70,6 @@ final class ContentRepository
             $metaData = $this->metaDataFactory->create($document->matter(), $relativePath);
             $metaData->setMarkdownPath($file->getRelativePathname());
 
-
             $mdContent = $this->converter->convert($mdContent);
 
             $item = $this->contentFactory->create($metaData, $mdContent);

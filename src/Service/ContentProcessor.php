@@ -31,10 +31,11 @@ final readonly class ContentProcessor
         $item = $this->processSubTemplates($item, $basePath);
         $template = $this->getTemplate($item->getMetaData()->getLayout());
 
-        return $this->twig->render($template, [
+        return $this->twig->render($template, context: [
             'base_path' => $basePath,
             'item' => $item,
             'navigation' => $this->contentRepository->getNavigation(),
+            'image' => $item->getMetaData()->getImage(),
         ]);
     }
 

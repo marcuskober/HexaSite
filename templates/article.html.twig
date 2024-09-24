@@ -7,6 +7,11 @@
 
 {% block body %}
     <article>
+        {% if image %}
+            <div class="header-image">
+                <img src="{{ image }}">
+            </div>
+        {% endif %}
         <h1>{{ item.metadata.title }}</h1>
         <p><em>{{ item.metadata.date.format('d.m.Y') }}</em></p>
 

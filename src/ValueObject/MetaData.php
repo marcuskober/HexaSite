@@ -15,6 +15,7 @@ final class MetaData
     private bool $navigation;
     private string $navigationTitle;
     private false|array $archive;
+    private ?string $image;
 
     public function __construct(array $data)
     {
@@ -27,8 +28,14 @@ final class MetaData
         $this->navigation = $data['navigation'] ?? false;
         $this->navigationTitle = $data['navigation_title'] ?? $this->title;
         $this->archive = $data['archive'] ?? false;
+        $this->image = $data['image'] ?? null;
 
         $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
     }
 
     public function isNavigation(): bool
