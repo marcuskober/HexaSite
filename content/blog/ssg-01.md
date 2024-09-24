@@ -101,4 +101,6 @@ _Git-Tag: [article01-s02](https://github.com/marcuskober/HexaSite-Learning/relea
 
 ## Beginn der Entwicklung mit einem Command
 
-Nun können wir mit der Entwicklung starten. Dies könnt ihr auf verschiedene Wege tun, zum Beispiel über einen [Test-Driven-Ansatz](https://de.wikipedia.org/wiki/Testgetriebene_Entwicklung). Dies ist aber nicht, worum es hier gehen soll. Wir wollen uns hier immer von einem Prototypen zum nächsten hangeln und dazwischen vernünftige Refactorings durchführen. Wir kümmern uns also zunächst darum, dass unser Code läuft und das gewünschte Ergebnis produziert und in einem direkt folgenden Refactoring 
+Nun können wir mit der Entwicklung starten. Dies könnt ihr auf verschiedene Wege tun, zum Beispiel über einen [Test-Driven-Ansatz](https://de.wikipedia.org/wiki/Testgetriebene_Entwicklung). Dies ist aber nicht, worum es hier gehen soll. Wir wollen uns hier immer von einem Prototypen zum nächsten hangeln und dazwischen vernünftige Refactorings durchführen. Wir kümmern uns also zunächst darum, dass unser Code läuft und das gewünschte Ergebnis produziert und in einem direkt folgenden Refactoring kümmern wir uns um eine gute Architektur.
+
+**Fortsetzung folgt.**
