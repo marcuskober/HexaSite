@@ -6,18 +6,21 @@ use App\Config\SiteConfig;
 use App\Content\ContentInterface;
 use App\Factory\ContentFactory;
 use App\Factory\MetaDataFactory;
-use App\Service\CustomLinkRenderer;
-use App\Torchlight\TorchlightCodeRenderer;
+use App\Markdown\CustomLinkRenderer;
+use App\Markdown\HeadingRenderer;
+use App\Markdown\TorchlightCodeRenderer;
 use App\ValueObject\MetaData;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
+use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\MarkdownConverter;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class ContentRepository
 {
@@ -33,6 +36,7 @@ final class ContentRepository
         private readonly ContentFactory         $contentFactory,
         private readonly SiteConfig             $siteConfig,
         private readonly TorchlightCodeRenderer $torchlightCodeRenderer,
+        private readonly SluggerInterface $slugger,
     )
     {
         $environment = new Environment();
@@ -40,6 +44,8 @@ final class ContentRepository
         $environment->addRenderer(Link::class, new CustomLinkRenderer($this));
         $environment->addRenderer(FencedCode::class, $this->torchlightCodeRenderer);
         $environment->addRenderer(IndentedCode::class, $this->torchlightCodeRenderer);
+        $environment->addRenderer(Heading::class, new HeadingRenderer($slugger));
+
         $this->converter = new MarkdownConverter($environment);
     }
 

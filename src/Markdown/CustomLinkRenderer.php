@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Markdown;
 
 use App\Repository\ContentRepository;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Torchlight;
+namespace App\Markdown;
 
+use App\Torchlight\TorchlightApi;
 use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
 use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
 use League\CommonMark\Node\Node;
