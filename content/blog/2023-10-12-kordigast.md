@@ -1,14 +1,14 @@
 ---
-title: "Kordigast"
+title: Kordigast
 summary: I took a week off to decompress, visiting my parents along with my two kids, and deal with some stress.
 date: 2023-10-12T17:29:00+02:00
 draft: false
-image: "/images/kordigast/kordigast-cover.jpeg"
+image: ../assets/images/kordigast-cover.jpeg
 categories: ["Personal"]
 tags: ["hike"]
 author: "Marcus Kober"
 show_related: false
-slug: "kordigast"
+slug: kordigast
 lang: en
 ---
 
@@ -26,4 +26,4 @@ Since the primordial sea extended in [this region](https://en.wikipedia.org/wiki
 
 ## Distance
 
-{{< image src="images/kordigast-distance.jpg" caption="Distance walked" alt="Kordigast distance" height="" width="400" position="left" command="fit" option="q100" class="img-fluid" title="" webp="true" >}}
+![distance walked](../assets/images/kordigast-distance.jpg)
