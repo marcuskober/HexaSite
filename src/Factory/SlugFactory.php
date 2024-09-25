@@ -2,6 +2,7 @@
 
 namespace App\Factory;
 
+use App\Config\SiteConfig;
 use App\ValueObject\Slug;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -9,6 +10,7 @@ final class SlugFactory
 {
     public function __construct(
         private SluggerInterface $slugger,
+        private SiteConfig $siteConfig,
     )
     {
     }
@@ -22,7 +24,15 @@ final class SlugFactory
         }
 
         if ($relativePath) {
-            $slug = $relativePath. DIRECTORY_SEPARATOR . $slug;
+            $slug = $relativePath. '/' . $slug;
+        }
+
+        if ($this->siteConfig->multilanguage && $this->siteConfig->multilanguage['enabled']) {
+            $mainLanguage = $this->siteConfig->multilanguage['main'];
+
+            if ($data['lang'] !== $mainLanguage && str_starts_with($slug, $data['lang'] . '/') === false) {
+                $slug = $data['lang'] . '/' . $slug;
+            }
         }
 
         $slug .= '.html';

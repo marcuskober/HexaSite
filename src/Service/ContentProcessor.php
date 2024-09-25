@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Config\SiteConfig;
 use App\Content\ContentInterface;
 use App\Repository\ContentRepository;
 use App\ValueObject\MetaData;
@@ -13,6 +14,7 @@ final readonly class ContentProcessor
     public function __construct(
         private ContentRepository $contentRepository,
         private Environment       $twig,
+        private SiteConfig $siteConfig,
     )
     {
     }
@@ -36,6 +38,7 @@ final readonly class ContentProcessor
             'item' => $item,
             'navigation' => $this->contentRepository->getNavigation(),
             'image' => $item->getMetaData()->getImage(),
+            'multilanguage' => $this->siteConfig->multilanguage && $this->siteConfig->multilanguage['enabled'],
         ]);
     }
 
@@ -50,7 +53,7 @@ final readonly class ContentProcessor
     {
         if ($item->getMetaData()->getArchive()) {
             $archiveConfig = $item->getMetaData()->getArchive();
-            $archive = $this->contentRepository->findByLayoutWithParameters($archiveConfig['layout']);
+            $archive = $this->contentRepository->findByLayoutWithParameters($archiveConfig['layout'], $item->getMetaData()->getLang());
 
             $archiveContent = $this->twig->render('_archive.html.twig', [
                 'base_path' => $basePath,

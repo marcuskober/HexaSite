@@ -10,6 +10,7 @@ use App\Markdown\CustomLinkRenderer;
 use App\Markdown\HeadingRenderer;
 use App\Markdown\TorchlightCodeRenderer;
 use App\ValueObject\MetaData;
+use App\ValueObject\Slug;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
@@ -60,6 +61,14 @@ final class ContentRepository
         $progressBar->setMessage('Parsing files');
         $progressBar->start($finder->count());
 
+        $multilanguageEnabled = $this->siteConfig->multilanguage && $this->siteConfig->multilanguage['enabled'];
+        if ($multilanguageEnabled) {
+            $languages = $this->siteConfig->multilanguage['languages'];
+            foreach ($languages as $language) {
+                $this->navigation[$language] = [];
+            }
+        }
+
         foreach ($finder as $file) {
             $this->currentUrl = $file->getPath();
 
@@ -73,22 +82,48 @@ final class ContentRepository
             $mdContent = $this->converter->convert($mdContent);
 
             $item = $this->contentFactory->create($metaData, $mdContent);
-            $this->items[] = $item;
+            $this->items[$metaData->getContentId().'@'.$metaData->getLang()] = $item;
 
             if ($this->siteConfig->use_navigation) {
-                $navgationOrder = array_search($item->getMetaData()->getContentId(), $this->siteConfig->navigation);
-                if ($navgationOrder !== false) {
-                    $this->navigation[$navgationOrder] = $metaData;
+                if ($multilanguageEnabled) {
+                    $navgationOrder = array_search($item->getMetaData()->getContentId(), $this->siteConfig->navigation[$metaData->getLang()]);
+                    if ($navgationOrder !== false) {
+                        $this->navigation[$metaData->getLang()][$navgationOrder] = $metaData;
+                    }
+                }
+                else {
+                    $navgationOrder = array_search($item->getMetaData()->getContentId(), $this->siteConfig->navigation);
+                    if ($navgationOrder !== false) {
+                        $this->navigation[$navgationOrder] = $metaData;
+                    }
                 }
             }
 
             $progressBar->advance();
         }
 
+        if ($multilanguageEnabled) {
+            foreach ($this->items as $item) {
+                foreach ($languages as $language) {
+                    if (!isset($this->items[$item->getMetaData()->getContentId().'@'.$language])) {
+                        continue;
+                    }
+
+                    $langItem = $this->items[$item->getMetaData()->getContentId().'@'.$language];
+                    $item->getMetaData()->addAlternative($language, $langItem->getMetaData());
+                }
+            }
+
+            foreach ($languages as $language) {
+                ksort($this->navigation[$language]);
+            }
+        }
+        else {
+            ksort($this->navigation);
+        }
+
         $progressBar->setMessage('Ready.');
         $progressBar->finish();
-
-        ksort($this->navigation);
 
         return $this->items;
     }
@@ -100,9 +135,11 @@ final class ContentRepository
         });
     }
 
-    public function findByLayoutWithParameters(string $layout, array $sort = ['date' => 'DESC'], int $limit = -1): array
+    public function findByLayoutWithParameters(string $layout, string $language = 'en', array $sort = ['date' => 'DESC'], int $limit = -1): array
     {
-        $items = $this->findByLayout($layout);
+        $multilanguageEnabled = $this->siteConfig->multilanguage && $this->siteConfig->multilanguage['enabled'];
+
+        $items = $multilanguageEnabled ? $this->findByLayoutAndLanguage($layout, $language) : $this->findByLayout($layout);
 
         $sortBy = 'get' . ucfirst(array_key_first($sort));
         $sortDir = $sort[array_key_first($sort)];
@@ -150,5 +187,12 @@ final class ContentRepository
     public function getNavigation(): array
     {
         return $this->navigation;
+    }
+
+    private function findByLayoutAndLanguage(string $layout, string $language)
+    {
+        return array_filter($this->items, function (ContentInterface $content) use ($layout, $language) {
+            return $content->getMetaData()->getLayout() === $layout && $content->getMetaData()->getLang() === $language;
+        });
     }
 }

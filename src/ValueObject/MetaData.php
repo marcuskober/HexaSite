@@ -2,6 +2,8 @@
 
 namespace App\ValueObject;
 
+use Symfony\Contracts\Cache\ItemInterface;
+
 final class MetaData
 {
     private string $title;
@@ -16,6 +18,7 @@ final class MetaData
     private string $navigationTitle;
     private false|array $archive;
     private ?string $image;
+    private array $alternatives = [];
 
     public function __construct(array $data)
     {
@@ -31,6 +34,26 @@ final class MetaData
         $this->image = $data['image'] ?? null;
 
         $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
+    }
+
+    public function setSlug(Slug $slug): void
+    {
+        $this->slug = $slug;
+    }
+
+    public function getAlternatives(): array
+    {
+        return $this->alternatives;
+    }
+
+    public function setAlternatives(array $alternatives): void
+    {
+        $this->alternatives = $alternatives;
+    }
+
+    public function addAlternative(string $language, MetaData $metaData): void
+    {
+        $this->alternatives[$language] = $metaData;
     }
 
     public function getImage(): ?string

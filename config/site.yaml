@@ -1,5 +1,14 @@
 use_navigation: true
 
 navigation:
-  - home
-  - blog
+  de:
+    - home
+    - blog
+  en:
+    - home
+    - blog
+
+multilanguage:
+  enabled: true,
+  languages: [de, en]
+  main: de

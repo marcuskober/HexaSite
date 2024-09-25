@@ -13,12 +13,27 @@
             <div>
                 <nav>
                     <ul>
-                        {% for element in navigation %}
-                            <li><a href="{{ base_path }}{{ element.slug }}">{{ element.navigationTitle }}</a></li>
-                        {% endfor %}
+                        {% if multilanguage %}
+                            {% for element in navigation[item.metadata.lang] %}
+                                <li><a href="{{ base_path }}{{ element.slug }}">{{ element.navigationTitle }}</a></li>
+                            {% endfor %}
+                        {% else %}
+                            {% for element in navigation %}
+                                <li><a href="{{ base_path }}{{ element.slug }}">{{ element.navigationTitle }}</a></li>
+                            {% endfor %}
+                        {% endif %}
                     </ul>
                 </nav>
             </div>
+            {% endif %}
+            {% if multilanguage %}
+                <div>
+                    <ul>
+                        {% for lang, alternative in item.metadata.alternatives %}
+                            <li><a href="{{ base_path }}{{ alternative.slug }}" hreflang="{{ alternative.lang }}"> {{ alternative.lang|upper }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
             {% endif %}
         </header>
         <nav>
