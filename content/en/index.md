@@ -10,10 +10,12 @@ content_id: home
 ---
 # Hi, I'm Marcus! 👋
 
-Ich arbeite als Full Stack Developer bei der [tetraeder.com gmbh](https://www.tetraeder.com) und kümmere mich dort unter anderem um die Portierung eines großen Legacy Systems nach Symfony, um die Integration von KI in unsere Produkte und um die bald launchenden WordPress-Webseiten.
+I work as a Full Stack Developer at [tetraeder.com gmbh](https://www.tetraeder.com), where I’m involved in porting a large legacy system to Symfony, integrating AI into our products, and the soon-to-launch WordPress websites.
 
-Mit meiner Frau und zwei tollen Kindern lebe ich in Köln und beschäftige mich auch privat viel mit Software-Architektur und Entwicklung.
+I live in Cologne with my wife and two wonderful kids, and I spend a lot of my free time diving deep into software architecture and development.
 
-Vielleicht bist du jetzt ein wenig erstaunt, aber ja: das ist (momentan) wirklich meine Webseite!
+You might be a little surprised, but yes: this really is my website (for now)!
 
-Gerade arbeite ich - aus Spaß - an einem eigenen **Static Site Generator** namens [HexaSite](https://github.com/marcuskober/HexaSite) und diese Webseite spiegelt sozusagen den Entwicklungsstand des Tools wider. Darüber hinaus schreibe ich gerade eine Artikelserie, die sich mit der Erstellung eines Static Site Generators in Symfony beschäftigt. [Zum ersten Artikel](blog/ssg-01.md)
+At the moment, I’m working on my own Static Site Generator called [HexaSite](https://github.com/marcuskober/HexaSite) just for fun, and this website reflects the current state of the tool’s development. I’m also writing a series of articles about building a Static Site Generator with Symfony. The first article is currently only available in German, but the English translation is coming soon.
+
+[To my articles](blog/index.md)
