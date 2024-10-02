@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Config\SiteConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class StaticServeCommand extends Command
 {
-    public function __construct()
+    public function __construct(private readonly SiteConfig $siteConfig)
     {
         parent::__construct();
     }
@@ -35,7 +36,7 @@ class StaticServeCommand extends Command
 
         $io->writeln('Starting the server at http://localhost:' . $port);
 
-        $cliCommand = sprintf('php -S localhost:%d -t build', $port);
+        $cliCommand = sprintf('php -S localhost:%d -t %s', $port, $this->siteConfig->build_dir);
         passthru($cliCommand);
 
         $io->success('Server is up and running');

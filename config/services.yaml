@@ -26,22 +26,11 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Provider\ContentProvider:
-        arguments:
-            $contentPath: '%content_path%'
-
-    App\Service\ItemWriter:
-        arguments:
-            $outputPath: '%output_path%'
-
     App\Config\SiteConfig:
         arguments:
             $configPath: '%config_path%'
+            $projectDir: '%kernel.project_dir%'
 
     App\Torchlight\TorchlightApi:
         arguments:
             $apiKey: '%env(resolve:TORCHLIGHT_API_KEY)%'
-
-    App\Command\StaticBuildCommand:
-        arguments:
-            $contentPath: '%content_path%'

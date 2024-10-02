@@ -1,3 +1,6 @@
+content_dir: ../content
+build_dir: ../build
+
 use_navigation: true
 
 navigation:

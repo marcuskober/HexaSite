@@ -2,23 +2,23 @@
 
 namespace App\Service;
 
+use App\Config\SiteConfig;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 
 final class ItemWriter
 {
     private array $writtenItems = [];
 
     public function __construct(
-        private string $outputPath,
         private Filesystem $filesystem,
+        private readonly SiteConfig $siteConfig,
     )
     {
     }
 
     public function writeItem(string $slug, string $content): void
     {
-        $itemPath = $this->outputPath . DIRECTORY_SEPARATOR . $slug;
+        $itemPath = $this->siteConfig->build_dir . DIRECTORY_SEPARATOR . $slug;
         $this->writtenItems[] = $itemPath;
 
         if (!is_dir(dirname($itemPath))) {

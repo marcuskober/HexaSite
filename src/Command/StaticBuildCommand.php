@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Collector\ItemCollector;
 use App\Collector\NavigationCollector;
+use App\Config\SiteConfig;
 use App\Service\ContentProcessor;
 use App\Service\ItemWriter;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -26,7 +27,7 @@ class StaticBuildCommand extends Command
         private readonly Filesystem          $fileSystem,
         private readonly NavigationCollector $navigationCollector,
         private readonly ItemCollector       $itemCollector,
-        private readonly string              $contentPath,
+        private readonly SiteConfig $siteConfig,
     )
     {
         parent::__construct();
@@ -36,11 +37,14 @@ class StaticBuildCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $this->fileSystem->remove('build/assets');
-        $this->fileSystem->mirror('assets', 'build/assets');
-        $contentAssetPath = $this->contentPath . DIRECTORY_SEPARATOR . 'assets';
+        $contentPath = $this->siteConfig->content_dir;
+        $buildPath = $this->siteConfig->build_dir;
+
+        $this->fileSystem->remove($buildPath . '/assets');
+        $this->fileSystem->mirror('assets', $buildPath . '/assets');
+        $contentAssetPath = $contentPath . DIRECTORY_SEPARATOR . 'assets';
         if (is_dir($contentAssetPath)) {
-            $this->fileSystem->mirror($contentAssetPath, 'build/assets');
+            $this->fileSystem->mirror($contentAssetPath, $buildPath . '/assets');
         }
 
         ProgressBar::setFormatDefinition('custom', "\n%message%\n\n%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n");

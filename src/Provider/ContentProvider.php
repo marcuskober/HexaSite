@@ -35,14 +35,13 @@ final class ContentProvider
     private array $navigation = [];
 
     public function __construct(
-        private readonly string                 $contentPath,
+        private readonly SiteConfig             $siteConfig,
         private readonly MetaDataFactory        $metaDataFactory,
         private readonly ContentFactory         $contentFactory,
-        private readonly SiteConfig             $siteConfig,
         private readonly TorchlightCodeRenderer $torchlightCodeRenderer,
         private readonly SluggerInterface $slugger,
-        private readonly EventDispatcherInterface $eventDispatcher,
         private readonly ItemMetaDataRepository $itemMetaDataRepository,
+        private readonly EventDispatcherInterface $eventDispatcher,
     )
     {
         $environment = new Environment();
@@ -58,7 +57,7 @@ final class ContentProvider
     public function findAll(ProgressBar $progressBar): array
     {
         $finder = new Finder();
-        $finder->files()->in($this->contentPath)->name('*.md');
+        $finder->files()->in($this->siteConfig->content_dir)->name('*.md');
 
         $this->items = [];
 
@@ -185,7 +184,7 @@ final class ContentProvider
 
     private function getPaths($path): array
     {
-        $absolutePath = str_contains($path, '..') ? $this->currentUrl : $this->contentPath;
+        $absolutePath = str_contains($path, '..') ? $this->currentUrl : $this->siteConfig->content_dir;
         $realPath = $absolutePath . DIRECTORY_SEPARATOR . $path;
         $relativePath = dirname($path);
 
