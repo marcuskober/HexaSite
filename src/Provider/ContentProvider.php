@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Repository;
+namespace App\Provider;
 
 use App\Config\SiteConfig;
 use App\Content\ContentInterface;
+use App\Event\NavigationCompletedEvent;
+use App\Event\NavigationItemAddedEvent;
 use App\Factory\ContentFactory;
 use App\Factory\MetaDataFactory;
 use App\Markdown\CustomLinkRenderer;
 use App\Markdown\HeadingRenderer;
 use App\Markdown\TorchlightCodeRenderer;
+use App\Repository\ItemMetaDataRepository;
 use App\ValueObject\MetaData;
-use App\ValueObject\Slug;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
@@ -20,10 +22,11 @@ use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\MarkdownConverter;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-final class ContentRepository
+final class ContentProvider
 {
     private MarkdownConverter $converter;
     private string $currentUrl;
@@ -38,6 +41,8 @@ final class ContentRepository
         private readonly SiteConfig             $siteConfig,
         private readonly TorchlightCodeRenderer $torchlightCodeRenderer,
         private readonly SluggerInterface $slugger,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ItemMetaDataRepository $itemMetaDataRepository,
     )
     {
         $environment = new Environment();
@@ -89,12 +94,16 @@ final class ContentRepository
                     $navgationOrder = array_search($item->getMetaData()->getContentId(), $this->siteConfig->navigation[$metaData->getLang()]);
                     if ($navgationOrder !== false) {
                         $this->navigation[$metaData->getLang()][$navgationOrder] = $metaData;
+
+                        $this->eventDispatcher->dispatch(new NavigationItemAddedEvent($metaData));
                     }
                 }
                 else {
                     $navgationOrder = array_search($item->getMetaData()->getContentId(), $this->siteConfig->navigation);
                     if ($navgationOrder !== false) {
                         $this->navigation[$navgationOrder] = $metaData;
+
+                        $this->eventDispatcher->dispatch(new NavigationItemAddedEvent($metaData));
                     }
                 }
             }
@@ -124,6 +133,8 @@ final class ContentRepository
 
         $progressBar->setMessage('Ready.');
         $progressBar->finish();
+
+        $this->eventDispatcher->dispatch(new NavigationCompletedEvent());
 
         return $this->items;
     }

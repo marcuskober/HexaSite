@@ -10,6 +10,7 @@ final class MetaData
     private Slug $slug;
     private string $lang;
     private \DateTimeInterface $date;
+    private \DateTimeInterface $changeDate;
     private string $layout;
     private string $description;
     private string $markdownPath;
@@ -34,6 +35,7 @@ final class MetaData
         $this->image = $data['image'] ?? null;
 
         $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
+        $this->changeDate = $this->date;
     }
 
     public function setSlug(Slug $slug): void
@@ -119,5 +121,15 @@ final class MetaData
     public function getArchive(): bool|array
     {
         return $this->archive;
+    }
+
+    public function setChangeDate(\DateTimeInterface $date): void
+    {
+        $this->changeDate = $date;
+    }
+
+    public function getChangeDate(): \DateTimeInterface
+    {
+        return $this->changeDate;
     }
 }

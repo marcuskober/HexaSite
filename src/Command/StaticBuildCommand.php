@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use App\Collector\ItemCollector;
+use App\Collector\NavigationCollector;
 use App\Service\ContentProcessor;
 use App\Service\ItemWriter;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -19,10 +21,12 @@ use Symfony\Component\Filesystem\Filesystem;
 class StaticBuildCommand extends Command
 {
     public function __construct(
-        private readonly ContentProcessor $contentProcessor,
-        private readonly ItemWriter       $itemWriter,
-        private readonly Filesystem $fileSystem,
-        private string $contentPath,
+        private readonly ContentProcessor    $contentProcessor,
+        private readonly ItemWriter          $itemWriter,
+        private readonly Filesystem          $fileSystem,
+        private readonly NavigationCollector $navigationCollector,
+        private readonly ItemCollector       $itemCollector,
+        private readonly string              $contentPath,
     )
     {
         parent::__construct();
@@ -49,14 +53,31 @@ class StaticBuildCommand extends Command
         $progressBar->setMessage('Start building...');
         $progressBar->start();
 
+        $navigationHasChanged = $this->navigationCollector->hasNavigationChanged();
+
         foreach ($items as $item) {
+            $slug = $item->getMetaData()->getSlug();
             $renderedItem = $this->contentProcessor->processItem($item);
+
+            $itemHasChanged = $this->itemCollector->hasItemChanged($slug, md5($renderedItem));
+
+            if (!$navigationHasChanged && !$itemHasChanged) {
+                $progressBar->setMessage('Skipping <fg=green>' . $item->getMetaData()->getMarkdownPath() . '</>');
+                $progressBar->advance();
+                continue;
+            }
 
             $progressBar->setMessage('Converting <fg=green>' . $item->getMetaData()->getMarkdownPath() . '</> to <fg=green>' . $item->getMetaData()->getSlug() . '</>');
             $progressBar->advance();
 
-            $this->itemWriter->writeItem($item->getMetaData()->getSlug(), $renderedItem);
+            $this->itemWriter->writeItem($slug, $renderedItem);
+
+            if ($itemHasChanged) {
+                $this->itemCollector->updateItem($slug, md5($renderedItem));
+            }
         }
+
+        $this->itemCollector->findDeletions();
 
         $progressBar->setMessage('Ready.');
         $progressBar->finish();

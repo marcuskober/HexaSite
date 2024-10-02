@@ -30,16 +30,16 @@ final class ItemWriter
 
     public function cleanUp(): void
     {
-       $finder = new Finder();
-       $finder->files()->in($this->outputPath)->name('*.html');
-
-       foreach ($finder as $file) {
-           $fileName = $file->getRealPath();
-           if (in_array($fileName, $this->writtenItems)) {
-               continue;
-           }
-
-           $this->filesystem->remove($fileName);
-       }
+//       $finder = new Finder();
+//       $finder->files()->in($this->outputPath)->name('*.html');
+//
+//       foreach ($finder as $file) {
+//           $fileName = $file->getRealPath();
+//           if (in_array($fileName, $this->writtenItems)) {
+//               continue;
+//           }
+//
+//           $this->filesystem->remove($fileName);
+//       }
     }
 }

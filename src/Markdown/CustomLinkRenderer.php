@@ -2,7 +2,7 @@
 
 namespace App\Markdown;
 
-use App\Repository\ContentRepository;
+use App\Provider\ContentProvider;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;
@@ -12,7 +12,7 @@ use League\CommonMark\Util\HtmlElement;
 class CustomLinkRenderer implements NodeRendererInterface
 {
     public function __construct(
-        private ContentRepository $contentRepository,
+        private ContentProvider $contentRepository,
     )
     {
     }
