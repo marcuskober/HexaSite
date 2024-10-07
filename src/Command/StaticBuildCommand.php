@@ -40,12 +40,7 @@ class StaticBuildCommand extends Command
         $contentPath = $this->siteConfig->content_dir;
         $buildPath = $this->siteConfig->build_dir;
 
-        $this->fileSystem->remove($buildPath . '/assets');
-        $this->fileSystem->mirror('assets', $buildPath . '/assets');
-        $contentAssetPath = $contentPath . DIRECTORY_SEPARATOR . 'assets';
-        if (is_dir($contentAssetPath)) {
-            $this->fileSystem->mirror($contentAssetPath, $buildPath . '/assets');
-        }
+        $this->handleAssets($buildPath, $contentPath);
 
         ProgressBar::setFormatDefinition('custom', "\n%message%\n\n%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n");
 
@@ -57,16 +52,52 @@ class StaticBuildCommand extends Command
         $progressBar->setMessage('Start building...');
         $progressBar->start();
 
+        $this->handleItems($items, $progressBar);
+
+        $progressBar->setMessage('Ready.');
+        $progressBar->finish();
+        $io->success('Site successfully built!');
+
+        $this->itemWriter->cleanUp();
+
+        return Command::SUCCESS;
+    }
+
+    private function handleAssets(string $buildPath, string $contentPath): void
+    {
+        $buildAssetPath = $buildPath . '/assets';
+        $contentAssetPath = $contentPath . DIRECTORY_SEPARATOR . 'assets';
+        $themeAssetPath = 'assets';
+
+        // Clear build asset folder
+        if (is_dir($buildAssetPath)) {
+            $this->fileSystem->remove($buildAssetPath);
+        }
+
+        // Copy theme files
+        if (is_dir($themeAssetPath)) {
+            $this->fileSystem->mirror($themeAssetPath, $buildAssetPath);
+        }
+
+        // Copy content assets
+        if (is_dir($contentAssetPath)) {
+            $this->fileSystem->mirror($contentAssetPath, $buildAssetPath);
+        }
+    }
+
+    private function handleItems(array $items, ProgressBar $progressBar): void
+    {
         $navigationHasChanged = $this->navigationCollector->hasNavigationChanged();
 
         foreach ($items as $item) {
             $slug = $item->getMetaData()->getSlug();
-            $renderedItem = $this->contentProcessor->processItem($item);
 
-            $itemHasChanged = $this->itemCollector->hasItemChanged($slug, md5($renderedItem));
+            $renderedItem = $this->contentProcessor->processItem($item);
+            $itemContentHash = md5($renderedItem);
+            $itemHasChanged = $this->itemCollector->hasItemChanged($slug, $itemContentHash);
 
             if (!$navigationHasChanged && !$itemHasChanged) {
-                $progressBar->setMessage('Skipping <fg=green>' . $item->getMetaData()->getMarkdownPath() . '</>');
+                $progressBar->setMessage('No changes: <fg=green>' . $item->getMetaData()->getMarkdownPath() . '</>');
                 $progressBar->advance();
                 continue;
             }
@@ -77,18 +108,10 @@ class StaticBuildCommand extends Command
             $this->itemWriter->writeItem($slug, $renderedItem);
 
             if ($itemHasChanged) {
-                $this->itemCollector->updateItem($slug, md5($renderedItem));
+                $this->itemCollector->updateItem($slug, $itemContentHash);
             }
         }
 
         $this->itemCollector->findDeletions();
-
-        $progressBar->setMessage('Ready.');
-        $progressBar->finish();
-        $io->success('Site successfully built!');
-
-        $this->itemWriter->cleanUp();
-
-        return Command::SUCCESS;
     }
 }
