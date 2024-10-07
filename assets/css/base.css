@@ -145,3 +145,29 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: clamp(1.2rem, 1.057rem + 0.381vw, 1.4rem);
     margin-top: clamp(1.8rem, 1.657rem + 0.381vw, 2rem);
 }
+
+.gallery {
+    display: grid;
+    gap: 1rem;
+    list-style-type: none;
+    padding: 0;
+
+    li {
+        margin: 0;
+
+        & + li {
+            margin-top: 0;
+        }
+    }
+
+    img {
+        aspect-ratio: 1/1;
+        object-fit: cover;
+    }
+}
+
+@media screen and (min-width: 30rem) {
+    .gallery {
+        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    }
+}

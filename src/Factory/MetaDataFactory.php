@@ -19,6 +19,7 @@ final readonly class MetaDataFactory
         }
 
         $data['slug'] = $this->slugFactory->create($data, $relativePath);
+        $data['path'] = $relativePath;
 
         return new MetaData($data);
     }

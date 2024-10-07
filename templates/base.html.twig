@@ -70,15 +70,6 @@
                     {% endif %}
                 </div>
             </header>
-            <p>
-                {% if item.metadata.lang == 'de' %}
-                    <strong>Achtung!</strong> Diese Seite ist nicht kaputt, sie befindet sich nur gerade im Aufbau, weshalb aktuell Bilder und Style-Dateien fehlen. Der Inhalt ist aber normal lesbar. Siehe <a href="{{ base_path }}index.html">Hinweis auf Startseite</a>
-                {% else %}
-                    <strong>Attention!</strong> This page is not broken; it’s just under construction, which is why images and style files are currently missing. However, the content is fully readable. See <a href="{{ base_path }}en/index.html">the notice on the homepage</a>.
-                {% endif %}
-            </p>
-            <nav>
-            </nav>
             <main class="main">
                 {% block body %}{% endblock %}
             </main>

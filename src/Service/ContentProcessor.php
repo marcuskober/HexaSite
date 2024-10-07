@@ -4,9 +4,11 @@ namespace App\Service;
 
 use App\Config\SiteConfig;
 use App\Content\ContentInterface;
+use App\Content\Image;
 use App\Provider\ContentProvider;
 use App\ValueObject\MetaData;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Finder\Finder;
 use Twig\Environment;
 
 final readonly class ContentProcessor
@@ -50,6 +52,68 @@ final readonly class ContentProcessor
     }
 
     private function processSubTemplates(ContentInterface $item, string $basePath): ContentInterface
+    {
+        $item = $this->processArchive($item, $basePath);
+
+        $itemContent = $item->getContent();
+        $matched = preg_match_all('#<!--:([^:]+):-->#iU', $itemContent, $matches);
+
+        if ($matched > 0) {
+            foreach ($matches[1] as $key => $code) {
+                $completeCode = $matches[0][$key];
+                $code = explode(' ', trim($code));
+                $itemType = array_shift($code);
+
+                $method = 'process' . ucfirst($itemType);
+                if (method_exists($this, $method)) {
+                    $item = $this->$method($item, $basePath, $code, $completeCode);
+                }
+            }
+        }
+
+        return $item;
+    }
+
+    private function processGallery(ContentInterface $item, string $basePath, array $code, string $completeCode): ContentInterface
+    {
+        $dir = null;
+        foreach ($code as $parameter) {
+            $parameterDetails = explode('=', $parameter);
+            $parameter = trim($parameterDetails[0]);
+            $value = trim($parameterDetails[1]);
+
+            switch ($parameter) {
+                case 'dir':
+                    $dir = str_replace('"', '', $value);
+                    break;
+            }
+        }
+
+        if (!$dir) {
+            return $item;
+        }
+
+        $realDir = realpath($this->siteConfig->content_dir . '/' . $item->getMetaData()->getPath() . '/' . $dir);
+
+        $finder = new Finder();
+        $finder->files()->in($realDir)->name(['*.jpg', '*.jpeg', '*.png', '*.gif', '*.webp']);
+
+        $gallery = [];
+        foreach ($finder as $file) {
+            $imageSrc = $dir . '/' . $file->getFilename();
+            $image = new Image($file->getPathname(), $imageSrc, '');
+            $gallery[] = $image;
+        }
+
+        $galleryContent = $this->twig->render('_gallery.html.twig', [
+            'gallery' => $gallery,
+        ]);
+
+        $item->setContent(str_replace($completeCode, $galleryContent, $item->getContent()));
+        return $item;
+    }
+
+    private function processArchive(ContentInterface $item, string $basePath): ContentInterface
     {
         if ($item->getMetaData()->getArchive()) {
             $archiveConfig = $item->getMetaData()->getArchive();

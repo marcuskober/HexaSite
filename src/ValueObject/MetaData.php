@@ -8,6 +8,8 @@ final class MetaData
 {
     private string $title;
     private Slug $slug;
+    private string $path;
+
     private string $lang;
     private \DateTimeInterface $date;
     private \DateTimeInterface $changeDate;
@@ -24,6 +26,7 @@ final class MetaData
     public function __construct(array $data)
     {
         $this->title = $data['title'] ?? 'Untitled';
+        $this->path = $data['path'];
         $this->slug = $data['slug'];
         $this->lang = $data['lang'] ?? 'en';
         $this->layout  = $data['layout'] ?? 'article';
@@ -33,7 +36,6 @@ final class MetaData
         $this->navigationTitle = $data['navigation_title'] ?? $this->title;
         $this->archive = $data['archive'] ?? false;
         $this->image = $data['image'] ?? null;
-
         $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
         $this->changeDate = $this->date;
     }
@@ -131,5 +133,10 @@ final class MetaData
     public function getChangeDate(): \DateTimeInterface
     {
         return $this->changeDate;
+    }
+
+    public function getPath(): string
+    {
+        return $this->path;
     }
 }
