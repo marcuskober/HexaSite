@@ -2,6 +2,8 @@
 
 namespace App\ValueObject;
 
+use App\Content\Image;
+
 final class MetaData
 {
     private string $title;
@@ -20,7 +22,7 @@ final class MetaData
     private bool $navigation;
     private string $navigationTitle;
     private false|array $archive;
-    private ?string $image;
+    private ?Image $image;
     private array $alternatives = [];
     private array $categories = [];
 
@@ -87,7 +89,7 @@ final class MetaData
         $this->alternatives[$language] = $metaData;
     }
 
-    public function getImage(): ?string
+    public function getImage(): ?Image
     {
         return $this->image;
     }

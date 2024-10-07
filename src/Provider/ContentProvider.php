@@ -12,6 +12,7 @@ use App\Factory\MetaDataFactory;
 use App\Factory\SlugFactory;
 use App\Markdown\CustomLinkRenderer;
 use App\Markdown\HeadingRenderer;
+use App\Markdown\ImageRenderer;
 use App\Markdown\TorchlightCodeRenderer;
 use App\Repository\ItemMetaDataRepository;
 use App\ValueObject\MetaData;
@@ -20,6 +21,7 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
 use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\MarkdownConverter;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
@@ -46,6 +48,7 @@ final class ContentProvider
         private readonly SluggerInterface $slugger,
         private readonly ItemMetaDataRepository $itemMetaDataRepository,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ImageRenderer $imageRenderer,
     )
     {
         $environment = new Environment();
@@ -54,6 +57,7 @@ final class ContentProvider
         $environment->addRenderer(FencedCode::class, $this->torchlightCodeRenderer);
         $environment->addRenderer(IndentedCode::class, $this->torchlightCodeRenderer);
         $environment->addRenderer(Heading::class, new HeadingRenderer($slugger));
+        $environment->addRenderer(Image::class, $this->imageRenderer);
 
         $this->converter = new MarkdownConverter($environment);
     }
@@ -86,6 +90,9 @@ final class ContentProvider
             $relativePath = $file->getRelativePath();
             $metaData = $this->metaDataFactory->create($document->matter(), $relativePath);
             $metaData->setMarkdownPath($file->getRelativePathname());
+
+            $this->imageRenderer->setRelativePath($relativePath);
+            $this->imageRenderer->setSlug($metaData->getSlug());
 
             $mdContent = $this->converter->convert($mdContent);
 

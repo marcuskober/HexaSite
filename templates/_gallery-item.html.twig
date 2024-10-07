@@ -1,10 +1,17 @@
 <li>
     <a href="{{ gallery_item.src }}" target="_blank" rel="noopener noreferrer">
         <img
-            src="{{ gallery_item.src }}"
+            src="{{ base_path }}{{ gallery_item.getSizes[1000].src }}"
             alt="{{ gallery_item.alt }}"
-            width="{{ gallery_item.width }}"
-            height="{{ gallery_item.height }}"
+            width="{{ gallery_item.getSizes[1000].width }}"
+            height="{{ gallery_item.getSizes[1000].height }}"
+            {% if key != 0 %}
+                loading="lazy"
+            {% else %}
+                loading="eager"
+            {% endif %}
+            srcset="{% for size in gallery_item.getSizes %}{{ base_path }}{{ size.src }} {{ size.width }}w, {% endfor %}"
+            sizes="(max-width: 30rem) 90vw, (min-width: 30rem) 20rem"
         >
     </a>
 </li>

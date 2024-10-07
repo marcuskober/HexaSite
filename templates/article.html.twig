@@ -9,7 +9,15 @@
     <article>
         {% if image %}
             <div class="header-image">
-                <img src="{{ image }}">
+                <img
+                        src="{{ base_path }}{{ image.src }}"
+                        alt="{{ image.alt }}"
+                        width="{{ image.width }}"
+                        height="{{ image.height }}"
+                        loading="eager"
+                        srcset="{{ base_path }}{{ image.src }} {{ image.width }}w, {% for size in image.getSizes %}{{ base_path }}{{ size.src }} {{ size.width }}w, {% endfor %}"
+                        sizes="(max-width: 30rem) 90vw, (min-width: 30rem) 50rem"
+                >
             </div>
         {% endif %}
         <h1>{{ item.metadata.title }}</h1>

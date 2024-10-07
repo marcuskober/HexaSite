@@ -1,5 +1,5 @@
 <ul class="gallery">
-    {% for gallery_item in gallery %}
+    {% for key, gallery_item in gallery %}
         {% include '_gallery-item.html.twig' %}
     {% endfor %}
 </ul>

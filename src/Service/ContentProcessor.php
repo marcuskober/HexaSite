@@ -125,12 +125,13 @@ final readonly class ContentProcessor
         $gallery = [];
         foreach ($finder as $file) {
             $imageSrc = $dir . '/' . $file->getFilename();
-            $image = new Image($file->getPathname(), $imageSrc, '');
+            $image = new Image($file->getPathname(), $imageSrc, '', $this->siteConfig->build_dir);
             $gallery[] = $image;
         }
 
         $galleryContent = $this->twig->render('_gallery.html.twig', [
             'gallery' => $gallery,
+            'base_path' => $basePath,
         ]);
 
         $item->setContent(str_replace($completeCode, $galleryContent, $item->getContent()));

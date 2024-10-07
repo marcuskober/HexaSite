@@ -72,7 +72,7 @@ class StaticBuildCommand extends Command
 
         // Clear build asset folder
         if (is_dir($buildAssetPath)) {
-            $this->fileSystem->remove($buildAssetPath);
+            //$this->fileSystem->remove($buildAssetPath);
         }
 
         // Copy theme files
