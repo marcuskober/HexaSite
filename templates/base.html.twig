@@ -6,11 +6,70 @@
         <meta name="generator" content="hexasite">
         {% block head %}{% endblock %}
 
+        <link rel="stylesheet" href="{{ base_path }}assets/css/base.css">
         <link rel="stylesheet" href="{{ base_path }}assets/css/torchlight.css">
+
+        <link rel="apple-touch-icon" sizes="57x57" href="{{ base_path }}assets/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="{{ base_path }}assets/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="{{ base_path }}assets/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="{{ base_path }}assets/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="{{ base_path }}assets/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="{{ base_path }}assets/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="{{ base_path }}assets/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="{{ base_path }}assets/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ base_path }}assets/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="{{ base_path }}assets/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ base_path }}assets/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ base_path }}assets/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ base_path }}assets/favicon/favicon-16x16.png">
+        <link rel="manifest" href="{{ base_path }}assets/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="{{ base_path }}assets/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
     </head>
     <body>
-        <header>
-            <div>Marcus Kober - Full Stack Developer</div>
+        <div class="page">
+            <header class="header">
+                <div class="header-line">
+                    <a href="{{ base_path }}{% if item.metadata.lang != 'de' %}en/{% endif %}" class="logo">Marcus Kober</a>
+                </div>
+                <div class="header-right">
+                    {% if navigation is not empty %}
+                        <div class="navigation">
+                            <nav>
+                                <ul>
+                                    {% if multilanguage %}
+                                        {% for element in navigation[item.metadata.lang] %}
+                                            <li><a href="{{ base_path }}{{ element.slug }}">{{ element.navigationTitle }}</a></li>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for element in navigation %}
+                                            <li><a href="{{ base_path }}{{ element.slug }}">{{ element.navigationTitle }}</a></li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    {% endif %}
+                    {% if multilanguage %}
+                        <div class="lang-switch">
+                            <ul>
+                                {% for lang, alternative in item.metadata.alternatives %}
+                                    <li>
+                                        <a
+                                            href="{{ base_path }}{{ alternative.slug }}"
+                                            hreflang="{{ alternative.lang }}"
+                                            class="{%if item.metadata.lang == lang %}active{% endif %}"
+                                        >
+                                                {{ alternative.lang|upper }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </header>
             <p>
                 {% if item.metadata.lang == 'de' %}
                     <strong>Achtung!</strong> Diese Seite ist nicht kaputt, sie befindet sich nur gerade im Aufbau, weshalb aktuell Bilder und Style-Dateien fehlen. Der Inhalt ist aber normal lesbar. Siehe <a href="{{ base_path }}index.html">Hinweis auf Startseite</a>
@@ -18,42 +77,20 @@
                     <strong>Attention!</strong> This page is not broken; it’s just under construction, which is why images and style files are currently missing. However, the content is fully readable. See <a href="{{ base_path }}en/index.html">the notice on the homepage</a>.
                 {% endif %}
             </p>
-            {% if navigation is not empty %}
-            <div>
-                <nav>
-                    <ul>
-                        {% if multilanguage %}
-                            {% for element in navigation[item.metadata.lang] %}
-                                <li><a href="{{ base_path }}{{ element.slug }}">{{ element.navigationTitle }}</a></li>
-                            {% endfor %}
-                        {% else %}
-                            {% for element in navigation %}
-                                <li><a href="{{ base_path }}{{ element.slug }}">{{ element.navigationTitle }}</a></li>
-                            {% endfor %}
-                        {% endif %}
-                    </ul>
-                </nav>
-            </div>
-            {% endif %}
-            {% if multilanguage %}
-                <div>
-                    <ul>
-                        {% for lang, alternative in item.metadata.alternatives %}
-                            <li><a href="{{ base_path }}{{ alternative.slug }}" hreflang="{{ alternative.lang }}"> {{ alternative.lang|upper }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-        </header>
-        <nav>
-        </nav>
-        <main>
-            {% block body %}{% endblock %}
-        </main>
-        <footer>
-            <hr>
-            <p><a href="https://github.com/marcuskober">GitHub</a> — <a href="https://www.linkedin.com/in/marcus-kober/">LinkedIn</a></p>
-            <p>Marcus Kober — <a href="mailto:hello@marcuskober.de">hello@marcuskober.de</a> — <a href="{{ base_path }}impressum.html">Impressum</a> | <a href="{{ base_path }}datenschutz.html">Datenschutz</a></p>
-        </footer>
+            <nav>
+            </nav>
+            <main class="main">
+                {% block body %}{% endblock %}
+            </main>
+            <footer class="footer">
+                <p>
+                    <a href="https://github.com/marcuskober">GitHub</a> —
+                    <a href="https://phpc.social/@marcuskober">Mastodon</a> —
+                    <a href="https://x.com/mrcskbr">X</a> —
+                    <a href="https://www.linkedin.com/in/marcus-kober/">LinkedIn</a>
+                </p>
+                <p>Marcus Kober — <a href="mailto:hello@marcuskober.de">hello@marcuskober.de</a> — <a href="{{ base_path }}impressum.html">Impressum</a> | <a href="{{ base_path }}datenschutz.html">Datenschutz</a></p>
+            </footer>
+        </div>
     </body>
 </html>

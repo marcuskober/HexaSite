@@ -5,10 +5,8 @@ use_navigation: true
 
 navigation:
   de:
-    - home
     - blog
   en:
-    - home
     - blog
 
 multilanguage:
