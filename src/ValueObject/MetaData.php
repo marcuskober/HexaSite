@@ -7,6 +7,9 @@ use Symfony\Contracts\Cache\ItemInterface;
 final class MetaData
 {
     private string $title;
+    private string $metaTitle;
+    private string $metaDescription;
+    private string $summary;
     private Slug $slug;
     private string $path;
 
@@ -26,6 +29,9 @@ final class MetaData
     public function __construct(array $data)
     {
         $this->title = $data['title'] ?? 'Untitled';
+        $this->metaTitle = $data['meta_title'] ?? $this->title;
+        $this->summary = $data['summary'] ?? '';
+        $this->metaDescription = $data['meta_description'] ?? $this->summary;
         $this->path = $data['path'];
         $this->slug = $data['slug'];
         $this->lang = $data['lang'] ?? 'en';
@@ -38,6 +44,21 @@ final class MetaData
         $this->image = $data['image'] ?? null;
         $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
         $this->changeDate = $this->date;
+    }
+
+    public function getMetaTitle(): string
+    {
+        return $this->metaTitle;
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->metaDescription;
+    }
+
+    public function getSummary(): string
+    {
+        return $this->summary;
     }
 
     public function setSlug(Slug $slug): void
