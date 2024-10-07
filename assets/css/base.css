@@ -171,3 +171,47 @@ h1, h2, h3, h4, h5, h6 {
         grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
     }
 }
+
+.meta {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.categories {
+    display: flex;
+    gap: 1rem;
+    list-style-type: none;
+    padding: 0;
+
+    li + li {
+        margin-top: 0;
+    }
+
+    a {
+        background-color: #f2f2f2;
+        border-radius: 3px;
+        display: block;
+        font-size: .8em;
+        padding: .2rem .5rem;
+        text-decoration: none;
+        transition: all .4s ease;
+
+        &:hover {
+            background-color: var(--main-color);
+            color: white;
+        }
+    }
+}
+
+.archive-meta {
+    .categories {
+        display: inline-flex;
+
+        a {
+            padding: .1rem .3rem;
+        }
+    }
+}

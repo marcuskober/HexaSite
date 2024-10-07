@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+    <title>{{ item.metadata.metaTitle }}</title>
+    <meta name="description" content="">
+{% endblock %}
+
+{% block body %}
+    {% set title = 'Kategorie' %}
+    {% set articles = 'Artikel' %}
+    {% if item.metadata.lang == 'en' %}
+        {% set title = 'Category' %}
+        {% set articles = 'Articles' %}
+    {% endif %}
+    <article>
+        <h1>{{ title }}: {{ item.metadata.title }}</h1>
+        <h2>{{ articles }}</h2>
+
+        {% set archive = item.items %}
+        {% include '_archive.html.twig' %}
+    </article>
+{% endblock %}

@@ -2,8 +2,6 @@
 
 namespace App\ValueObject;
 
-use Symfony\Contracts\Cache\ItemInterface;
-
 final class MetaData
 {
     private string $title;
@@ -11,8 +9,7 @@ final class MetaData
     private string $metaDescription;
     private string $summary;
     private Slug $slug;
-    private string $path;
-
+    private ?string $path;
     private string $lang;
     private \DateTimeInterface $date;
     private \DateTimeInterface $changeDate;
@@ -25,6 +22,7 @@ final class MetaData
     private false|array $archive;
     private ?string $image;
     private array $alternatives = [];
+    private array $categories = [];
 
     public function __construct(array $data)
     {
@@ -32,7 +30,7 @@ final class MetaData
         $this->metaTitle = $data['meta_title'] ?? $this->title;
         $this->summary = $data['summary'] ?? '';
         $this->metaDescription = $data['meta_description'] ?? $this->summary;
-        $this->path = $data['path'];
+        $this->path = $data['path'] ?? null;
         $this->slug = $data['slug'];
         $this->lang = $data['lang'] ?? 'en';
         $this->layout  = $data['layout'] ?? 'article';
@@ -44,6 +42,14 @@ final class MetaData
         $this->image = $data['image'] ?? null;
         $this->date = isset($data['date']) ? new \DateTime("@".$data['date']) : new \DateTime();
         $this->changeDate = $this->date;
+        $categories = $data['categories'] ?? [];
+        $categories = is_string($categories) ? [$categories] : $categories;
+        $this->categories = $categories;
+    }
+
+    public function getCategories(): array
+    {
+        return $this->categories;
     }
 
     public function getMetaTitle(): string

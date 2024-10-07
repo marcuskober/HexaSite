@@ -2,7 +2,12 @@
     {% for element in archive %}
             <li>
                 <a href="{{ base_path }}{{ element.metaData.slug }}">{{ element.metaData.title }}</a><br>
-                <em>{{ element.metaData.date.format('d.m.Y') }}</em>
+                <div class="archive-meta">
+                    <em>{{ element.metaData.date.format('d.m.Y') }}</em>{% if categories is defined %} |
+                        {% set item = element %}
+                        {% include '_category-list.html.twig' %}
+                    {% endif %}
+                </div>
             </li>
     {% endfor %}
 </ul>

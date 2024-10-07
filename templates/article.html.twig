@@ -13,7 +13,10 @@
             </div>
         {% endif %}
         <h1>{{ item.metadata.title }}</h1>
-        <p><em>{{ item.metadata.date.format('d.m.Y') }}</em></p>
+        <div class="meta">
+            <div class="date"><em>{{ item.metadata.date.format('d.m.Y') }}</em></div>
+            {% include '_category-list.html.twig' %}
+        </div>
 
         {{ item.content|raw }}
     </article>

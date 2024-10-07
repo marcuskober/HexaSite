@@ -1,0 +1,8 @@
+{% if item.metadata.categories is defined %}
+    <ul class="categories">
+        {% for category in item.metadata.categories %}
+            {% set categoryObject = categories[item.metadata.lang ~ category] %}
+            <li><a href="{{ base_path }}{{ categoryObject.metadata.slug }}">{{ categoryObject.metadata.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}

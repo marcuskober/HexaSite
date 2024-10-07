@@ -41,7 +41,31 @@ final readonly class ContentProcessor
             'navigation' => $this->contentProvider->getNavigation(),
             'image' => $item->getMetaData()->getImage(),
             'multilanguage' => $this->siteConfig->multilanguage && $this->siteConfig->multilanguage['enabled'],
+            'categories' => $this->contentProvider->getCategories(),
         ]);
+    }
+
+    public function processCategories(): array
+    {
+        $categories = [];
+        $isMultilanguage = $this->siteConfig->multilanguage && $this->siteConfig->multilanguage['enabled'];
+        foreach ($this->contentProvider->getCategories() as $category) {
+            $basePath = '../';
+            if ($isMultilanguage && $category->getMetaData()->getLang() !== $this->siteConfig->multilanguage['main']) {
+                $basePath = str_repeat($basePath, 2);
+            }
+            $content = $this->twig->render('category.html.twig', context: [
+                'base_path' => $basePath,
+                'item' => $category,
+                'navigation' => $this->contentProvider->getNavigation(),
+                'multilanguage' => $isMultilanguage,
+                'categories' => $this->contentProvider->getCategories(),
+            ]);
+            $category->setContent($content);
+            $categories[] = $category;
+        }
+
+        return $categories;
     }
 
     private function getBasePath(MetaData $metaData): string
@@ -126,6 +150,7 @@ final readonly class ContentProcessor
             $archiveContent = $this->twig->render('_archive.html.twig', [
                 'base_path' => $basePath,
                 'archive' => $archive,
+                'categories' => $this->contentProvider->getCategories(),
             ]);
 
             $itemContent = str_replace('<!--: archive :-->', '{{ archive|raw }}', $item->getContent());

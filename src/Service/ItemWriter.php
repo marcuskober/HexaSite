@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Config\SiteConfig;
+use App\Content\Category;
+use App\Provider\ContentProvider;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class ItemWriter
@@ -12,6 +14,7 @@ final class ItemWriter
     public function __construct(
         private Filesystem $filesystem,
         private readonly SiteConfig $siteConfig,
+        private readonly ContentProvider $contentProvider,
     )
     {
     }
@@ -41,5 +44,17 @@ final class ItemWriter
 //
 //           $this->filesystem->remove($fileName);
 //       }
+    }
+
+    /**
+     * @param array<Category> $categories
+     *
+     * @return void
+     */
+    public function writeCategories(array $categories): void
+    {
+        foreach ($categories as $category) {
+            $this->writeItem($category->getMetaData()->getSlug(), $category->getContent());
+        }
     }
 }

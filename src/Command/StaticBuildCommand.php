@@ -53,6 +53,7 @@ class StaticBuildCommand extends Command
         $progressBar->start();
 
         $this->handleItems($items, $progressBar);
+        $this->handleCategories();
 
         $progressBar->setMessage('Ready.');
         $progressBar->finish();
@@ -113,5 +114,10 @@ class StaticBuildCommand extends Command
         }
 
         $this->itemCollector->findDeletions();
+    }
+
+    private function handleCategories(): void
+    {
+        $this->itemWriter->writeCategories($this->contentProcessor->processCategories());
     }
 }

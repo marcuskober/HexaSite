@@ -3,11 +3,13 @@
 namespace App\Provider;
 
 use App\Config\SiteConfig;
+use App\Content\Category;
 use App\Content\ContentInterface;
 use App\Event\NavigationCompletedEvent;
 use App\Event\NavigationItemAddedEvent;
 use App\Factory\ContentFactory;
 use App\Factory\MetaDataFactory;
+use App\Factory\SlugFactory;
 use App\Markdown\CustomLinkRenderer;
 use App\Markdown\HeadingRenderer;
 use App\Markdown\TorchlightCodeRenderer;
@@ -33,11 +35,13 @@ final class ContentProvider
     private array $metaData = [];
     private array $items = [];
     private array $navigation = [];
+    private array $categories = [];
 
     public function __construct(
         private readonly SiteConfig             $siteConfig,
         private readonly MetaDataFactory        $metaDataFactory,
         private readonly ContentFactory         $contentFactory,
+        private readonly SlugFactory $slugFactory,
         private readonly TorchlightCodeRenderer $torchlightCodeRenderer,
         private readonly SluggerInterface $slugger,
         private readonly ItemMetaDataRepository $itemMetaDataRepository,
@@ -87,6 +91,8 @@ final class ContentProvider
 
             $item = $this->contentFactory->create($metaData, $mdContent);
             $this->items[$metaData->getContentId().'@'.$metaData->getLang()] = $item;
+
+            $this->handleItemCategories($item);
 
             if ($this->siteConfig->use_navigation) {
                 if ($multilanguageEnabled) {
@@ -203,10 +209,47 @@ final class ContentProvider
         return $this->navigation;
     }
 
-    private function findByLayoutAndLanguage(string $layout, string $language)
+    private function findByLayoutAndLanguage(string $layout, string $language): array
     {
         return array_filter($this->items, function (ContentInterface $content) use ($layout, $language) {
             return $content->getMetaData()->getLayout() === $layout && $content->getMetaData()->getLang() === $language;
         });
+    }
+
+    private function handleItemCategories(ContentInterface $item): void
+    {
+        if (empty($item->getMetaData()->getCategories())) {
+            return;
+        }
+
+        foreach ($item->getMetaData()->getCategories() as $category) {
+            $slugData = [
+                'title' => $category,
+                'lang' => $item->getMetaData()->getLang(),
+            ];
+
+            $slug = $this->slugFactory->create($slugData, 'categories');
+            $metaData = [
+                'title' => $category,
+                'lang' => $item->getMetaData()->getLang(),
+                'slug' => $slug,
+            ];
+
+            $key = $item->getMetaData()->getLang() . $category;
+
+            if (!isset($this->categories[$key])) {
+                $categoryMeta = new MetaData($metaData);
+                $categoryObject = new Category($categoryMeta, '');
+                $this->categories[$key] = $categoryObject;
+            }
+
+            $categoryObject = $this->categories[$key];
+            $categoryObject->addItem($item);
+        }
+    }
+
+    public function getCategories(): array
+    {
+        return $this->categories;
     }
 }
