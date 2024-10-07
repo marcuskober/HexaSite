@@ -53,7 +53,11 @@ final readonly class ContentProcessor
     {
         if ($item->getMetaData()->getArchive()) {
             $archiveConfig = $item->getMetaData()->getArchive();
-            $archive = $this->contentProvider->findByLayoutWithParameters($archiveConfig['layout'], $item->getMetaData()->getLang());
+            $archive = $this->contentProvider->findByLayoutWithParameters(
+                $archiveConfig['layout'],
+                $item->getMetaData()->getLang(),
+                limit: $archiveConfig['count'] ?? -1
+            );
 
             $archiveContent = $this->twig->render('_archive.html.twig', [
                 'base_path' => $basePath,

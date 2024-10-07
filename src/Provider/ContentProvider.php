@@ -160,6 +160,10 @@ final class ContentProvider
             return $itemA->getMetaData()->$sortBy() > $itemB->getMetaData()->$sortBy();
         });
 
+        if ($limit > 0) {
+            $items = array_slice($items, 0, $limit);
+        }
+
         return $items;
     }
 
